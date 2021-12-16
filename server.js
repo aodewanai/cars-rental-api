@@ -5,6 +5,11 @@ app.use(express.json());
 
 const dotenv = require('dotenv').config();
 
+const cors = require('cors');
+app.use(cors({
+    origin: '*'
+}));
+
 require('./initDB')();
 
 app.get('/', (req, res) => {
