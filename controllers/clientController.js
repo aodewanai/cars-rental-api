@@ -71,5 +71,27 @@ module.exports = {
         } catch (error) {
             sendError(res, 400, 'Bad request')
         }
+    },
+    deleteClient: async (req, res) => {
+        console.log("deleteClient", req.params);
+        try {
+            const client = await Client.findOne({_id: new ObjectId(req.params.id)});
+            if (client) {
+                await Client.deleteOne(client);
+                sendResult(res, 'Success',
+                    {
+                        "id": client._id,
+                        "surname": client.surname,
+                        "name": client.name,
+                        "middle_name": client.middle_name,
+                        "address": client.address,
+                        "telephone": client.telephone
+                    });
+            } else {
+                sendError(res, 400, 'Client doesnt exists')
+            }
+        } catch (error) {
+            sendError(res, 400, 'Bad request')
+        }
     }
 }
