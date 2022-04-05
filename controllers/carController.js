@@ -77,13 +77,13 @@ module.exports = {
         console.log("editCar");
         try {
             let newCar = {...req.body};
-            newCar._id = new ObjectId(req.body._id);
-            let car = await Car.find({_id: new ObjectId(req.body._id)});
+            newCar._id = new ObjectId(req.body.id);
+            let car = await Car.findOne({_id: new ObjectId(req.body.id)});
             if (car) {
                 Object.entries(newCar).forEach(([key, value]) => {
                     car[key] = newCar[key] ?? value;
                 })
-                await Car.replaceOne({_id: new ObjectId(req.body._id)}, car);
+                await Car.replaceOne({_id: new ObjectId(req.body.id)}, car);
                 sendResult(res, 'Success', {
                     ...car._doc
                 });
@@ -97,9 +97,9 @@ module.exports = {
     deleteCar: async (req, res) => {
         console.log("deleteCar");
         try {
-            const car = await Car.find({_id: new ObjectId(req.body._id)});
+            const car = await Car.findOne({_id: new ObjectId(req.params.id)});
             if (car) {
-                await car.remove();
+                await Car.deleteOne(car);
                 sendResult(res, 'Success', {
                     ...car._doc
                 });
