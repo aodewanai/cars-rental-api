@@ -72,5 +72,42 @@ module.exports = {
         } catch (error) {
             sendError(res, 400, 'Bad request')
         }
-    }
+    },
+    editCar: async (req, res) => {
+        console.log("editCar");
+        try {
+            let newCar = {...req.body};
+            newCar._id = new ObjectId(req.body._id);
+            let car = await Car.find({_id: new ObjectId(req.body._id)});
+            if (car) {
+                Object.entries(newCar).forEach(([key, value]) => {
+                    car[key] = newCar[key] ?? value;
+                })
+                await Car.replaceOne({_id: new ObjectId(req.body._id)}, car);
+                sendResult(res, 'Success', {
+                    ...car._doc
+                });
+            } else {
+                sendError(res, 400, 'Car is missing')
+            }
+        } catch (error) {
+            sendError(res, 400, `Bad request! ${error}`)
+        }
+    },
+    deleteCar: async (req, res) => {
+        console.log("deleteCar");
+        try {
+            const car = await Car.find({_id: new ObjectId(req.body._id)});
+            if (car) {
+                await car.remove();
+                sendResult(res, 'Success', {
+                    ...car._doc
+                });
+            } else {
+                sendError(res, 400, 'Car is missing')
+            }
+        } catch (error) {
+            sendError(res, 400, `Bad request! ${error}`)
+        }
+    },
 }
